@@ -6,20 +6,36 @@ import string
 
 class AlphaPuzzleSolver:
 
+    """
+    General workflow:
+    1. Parse the board to create two word lists
+    2. Substitute the letters we know into the word lists
+    3. Find all possible words using a regex search and elimination of words without character pairs
+    4. Sort the list of lists of all possible words by length of how many matches there were
+    5. create a hypothesis (word guess) using a word from the shortest list of possible words
+    6. Substitute these letters into the word lists
+    7. Find all possible words
+    8. Repeat steps 6 and 7 until we have decrypted the cypher or cannot find any possible words for one word
+    9. If we cannot find any possible words, start from scratch but using the next word in the shortest list of possible words as a hypothesis
+    """
+
     h_word_list = []
     v_word_list = []
     h_word_list_original = []
     v_word_list_original = []
     not_found = list(string.ascii_lowercase)
 
-    def __init__(self, puzzle, all_words):
-        self.original_puzzle = copy.deepcopy(puzzle)
-        self.puzzle = puzzle
-        self.board = puzzle.get("board")
-        self.letters = dict((k, v.lower()) for k, v in puzzle.get("letters").items())
+    def __init__(self, puzzle_file_path, all_words_file_path):
+        self.all_words = []
+        with open(puzzle_file_path, 'r') as f1:
+            self.puzzle = json.load(f1)
+        with open(all_words_file_path, 'r') as f2:
+            for line in f2:
+                self.all_words.append(line.lower())
+        self.board = self.puzzle.get("board")
+        self.letters = dict((k, v.lower()) for k, v in self.puzzle.get("letters").items())
         for char in self.letters.values():
             self.not_found.remove(char.lower())
-        self.all_words = all_words
 
     def parse_board(self):
         word = []
@@ -61,17 +77,12 @@ class AlphaPuzzleSolver:
         self.v_word_list_original = copy.deepcopy(self.v_word_list)
 
     def solve_board(self):
-        h_possible_words = []
-        v_possible_words = []
         self.substitutor()
         h_possible_words = self.find_all_possible_words(self.h_word_list)
         v_possible_words = self.find_all_possible_words(self.v_word_list)
         h_possible_words.sort(key=len)
         v_possible_words.sort(key=len)
-        print(h_possible_words)
-        print(v_possible_words)
         while True:
-            word_guess = ""
             if len(h_possible_words[0]) == 1:
                 del h_possible_words[0]
             if len(v_possible_words[0]) == 1:
@@ -82,7 +93,7 @@ class AlphaPuzzleSolver:
             else:
                 word_guess = v_possible_words[0][1]
                 self.update_letters(word_guess, self.v_word_list[int(v_possible_words[0][0])])
-            print(word_guess)
+            print("Assuming word '" + word_guess + "' is correct")
             h_match_flag = True
             v_match_flag = True
             while h_match_flag or v_match_flag:
@@ -94,18 +105,17 @@ class AlphaPuzzleSolver:
                 h_match_flag = self.find_all_possible_words(self.h_word_list)
                 v_match_flag = self.find_all_possible_words(self.v_word_list)
 
-
-
-                self.print_word_lists()
+                print("Number of letters found: " + str(len(self.letters)))
 
             if len(self.letters) == 26:
-                self.create_json_solution()
+                self.create_solution()
+                self.print_solution()
                 return
             if len(h_possible_words[0]) <= len(v_possible_words[0]):
                 del h_possible_words[0][1]
             else:
                 del v_possible_words[0][1]
-            self.puzzle = copy.deepcopy(self.original_puzzle)
+            # Reset the puzzle before starting with new hypothesis
             self.board = self.puzzle.get("board")
             self.letters = self.puzzle.get("letters")
             self.h_word_list = copy.deepcopy(self.h_word_list_original)
@@ -144,8 +154,6 @@ class AlphaPuzzleSolver:
                 if word[pair[0]] != word[pair[1]]:
                     possible_words.remove(word)
                     break
-
-       # print(possible_words)
 
         if len(possible_words) == 1:
             self.update_letters(possible_words[0], partial_word)
@@ -194,35 +202,20 @@ class AlphaPuzzleSolver:
                     self.not_found.remove(complete_word[i])
                     found_letters.append(complete_word[i])
 
-    def print_word_lists(self):
-        # print(self.h_word_list)
-        # print(self.v_word_list)
-        #print(self.letters)
-        print(len(self.letters))
-        print(self.h_word_list)
-        print(self.v_word_list)
-        print()
+    def print_solution(self):
+        print("Current solution:")
+        for row in self.board:
+            print(*row)
 
-    def create_json_solution(self):
+    def create_solution(self):
         for word_index in range(len(self.board)):
             for char_index in range(len(self.board[word_index])):
                 if str(self.board[word_index][char_index]) in self.letters.keys():
                     self.board[word_index][char_index] = self.letters.get(str(self.board[word_index][char_index]))
-
-        with open('day1_solution.json', 'w') as outfile:
-            json.dump(self.puzzle, outfile, indent=4, sort_keys=True)
+                if self.board[word_index][char_index] == 0:
+                    self.board[word_index][char_index] = " "
 
 if __name__ == "__main__":
-    all_words = []
-    with open("day1.json", 'r') as f1:
-        day_1 = json.load(f1)
-    with open("all_words.txt", 'r') as f2:
-        for line in f2:
-            all_words.append(line.lower())
-    solver = AlphaPuzzleSolver(day_1, all_words)
+    solver = AlphaPuzzleSolver("day1.json", "all_words.txt")
     solver.parse_board()
     solver.solve_board()
-    print(solver.letters)
-    # solver.substitutor()
-    # print(solver.v_word_list[-1])
-    # solver.word_search(solver.v_word_list[-1])
