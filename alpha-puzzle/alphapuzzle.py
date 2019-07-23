@@ -96,6 +96,7 @@ class AlphaPuzzleSolver:
             print("Assuming word '" + word_guess + "' is correct")
             h_match_flag = True
             v_match_flag = True
+            letters_found = 0
             while h_match_flag or v_match_flag:
                 self.substitutor()
                 # Remove new found letters before forming regex
@@ -105,7 +106,18 @@ class AlphaPuzzleSolver:
                 h_match_flag = self.find_all_possible_words(self.h_word_list)
                 v_match_flag = self.find_all_possible_words(self.v_word_list)
 
-                print("Number of letters found: " + str(len(self.letters)))
+                # TODO Why does it get stuck in a loop when it doesn't find a single possible word (day3.json)?
+                print("h_match_flag: " + str(h_match_flag))
+                print("v_match_flag: " + str(v_match_flag))
+
+                # This may not be the best way.
+                if letters_found == len(self.letters):
+                    h_match_flag = False
+                    v_match_flag = False
+
+                letters_found = len(self.letters)
+                print("Number of letters found: " + str(letters_found))
+
 
             if len(self.letters) == 26:
                 self.create_solution()
@@ -216,6 +228,6 @@ class AlphaPuzzleSolver:
                     self.board[word_index][char_index] = " "
 
 if __name__ == "__main__":
-    solver = AlphaPuzzleSolver("day1.json", "all_words.txt")
+    solver = AlphaPuzzleSolver("day3.json", "all_words.txt")
     solver.parse_board()
     solver.solve_board()
