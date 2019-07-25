@@ -106,7 +106,8 @@ class AlphaPuzzleSolver:
                 h_match_flag = self.find_all_possible_words(self.h_word_list)
                 v_match_flag = self.find_all_possible_words(self.v_word_list)
 
-                # TODO Why does it get stuck in a loop when it doesn't find a single possible word (day3.json)?
+                # TODO Why does it get stuck in a loop when it doesn't find a single possible word (day2 and day3.json)?
+                # TODO Need to recursively guess words.
                 print("h_match_flag: " + str(h_match_flag))
                 print("v_match_flag: " + str(v_match_flag))
 
@@ -128,8 +129,9 @@ class AlphaPuzzleSolver:
             else:
                 del v_possible_words[0][1]
             # Reset the puzzle before starting with new hypothesis
-            self.board = self.puzzle.get("board")
-            self.letters = self.puzzle.get("letters")
+            self.board = copy.deepcopy(self.puzzle.get("board"))
+            self.letters = copy.deepcopy(self.puzzle.get("letters"))
+            # print(self.letters)
             self.h_word_list = copy.deepcopy(self.h_word_list_original)
             self.v_word_list = copy.deepcopy(self.v_word_list_original)
             self.substitutor()
@@ -228,6 +230,6 @@ class AlphaPuzzleSolver:
                     self.board[word_index][char_index] = " "
 
 if __name__ == "__main__":
-    solver = AlphaPuzzleSolver("day3.json", "all_words.txt")
+    solver = AlphaPuzzleSolver("day2.json", "words_alpha.txt")
     solver.parse_board()
     solver.solve_board()
