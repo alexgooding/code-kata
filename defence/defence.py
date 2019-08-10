@@ -1,6 +1,7 @@
 class DefenceSolver:
 
     def __init__(self):
+        # G = grassland, F = forest, M = mountain, W = water, X = wall, B = blank
         self.MAP = [
                     ["F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "W", "W"],
                     ["F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "F", "F", "F"],
@@ -69,28 +70,49 @@ class DefenceSolver:
             return False
 
     def have_two_neighbours_in_one_direction(self, grid, coordinate, y_limit, x_limit):
-        top_border = []
-        bottom_border = []
-        left_border = []
-        right_border = []
 
         if coordinate[0] - 1 < 0:
             top_border = ["B", "B", "B"]
         else:
-            top_border = ["B" if coordinate[1] - 1 < 0 else grid[coordinate[0] - 1][coordinate[1] - 1], grid[coordinate[0] - 1][coordinate[1]], "B" if coordinate[1] + 1 >= x_limit else grid[coordinate[0] - 1][coordinate[1] + 1]]
+            top_border = ["B" if coordinate[1] - 1 < 0 else grid[coordinate[0] - 1][coordinate[1] - 1],
+                          grid[coordinate[0] - 1][coordinate[1]],
+                          "B" if coordinate[1] + 1 >= x_limit else grid[coordinate[0] - 1][coordinate[1] + 1]]
 
         if coordinate[0] + 1 >= y_limit:
             bottom_border = ["B", "B", "B"]
         else:
-            bottom_border = ["B" if coordinate[1] - 1 < 0 else grid[coordinate[0] + 1][coordinate[1] - 1], grid[coordinate[0] + 1][coordinate[1]], "B" if coordinate[1] + 1 >= x_limit else grid[coordinate[0] + 1][coordinate[1] + 1]]
+            bottom_border = ["B" if coordinate[1] - 1 < 0 else grid[coordinate[0] + 1][coordinate[1] - 1],
+                             grid[coordinate[0] + 1][coordinate[1]],
+                             "B" if coordinate[1] + 1 >= x_limit else grid[coordinate[0] + 1][coordinate[1] + 1]]
+
+        if coordinate[1] -1 < 0:
+            left_border = ["B", "B", "B"]
+        else:
+            left_border = ["B" if coordinate[0] - 1 < 0 else grid[coordinate[0] - 1][coordinate[1] - 1],
+                          grid[coordinate[0]][coordinate[1] - 1],
+                          "B" if coordinate[0] + 1 >= y_limit else grid[coordinate[0] + 1][coordinate[1] - 1]]
+
+        if coordinate[1] + 1 >= x_limit:
+            right_border = ["B", "B", "B"]
+        else:
+            right_border = ["B" if coordinate[0] - 1 < 0 else grid[coordinate[0] - 1][coordinate[1] + 1],
+                             grid[coordinate[0]][coordinate[1] + 1],
+                             "B" if coordinate[0] + 1 >= y_limit else grid[coordinate[0] + 1][coordinate[1] + 1]]
+
+        if ("X" in top_border and "X" in bottom_border) or ("X" in left_border and "X" in right_border):
+            return True
+        else:
+            return False
 
     def does_wall_join(self, grid):
         y_limit = len(grid)
         x_limit = len(grid[0])
         for y in range(0, y_limit):
             for x in range(0, x_limit):
-                if not self.have_two_neighbours_in_one_direction(grid, (y, x), y_limit, x_limit):
-                    return False
+                print(grid[y][x])
+                if grid[y][x] == "X":
+                    if not self.have_two_neighbours_in_one_direction(grid, (y, x), y_limit, x_limit):
+                        return False
         return True
 
     # A solution is valid if the wall joins together (assuming water is treated as a wall),
@@ -101,4 +123,6 @@ class DefenceSolver:
         else:
             return False
 
-
+if __name__ == "__main__":
+    solver = DefenceSolver()
+    print(solver.does_wall_join(solver.MAP))
