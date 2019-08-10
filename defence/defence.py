@@ -54,4 +54,17 @@ class DefenceSolver:
                     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
                     ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"]
                     ]
+        self.BUDGET = 1000
+        self.GRASSLAND_COST = 1
+        self.FOREST_COST = 10
+        self.MOUNTAIN_COST = 100
+
+    def calculate_cost(self, num_grassland, num_forest, num_mountain):
+        return num_grassland * self.GRASSLAND_COST + num_forest * self.FOREST_COST + num_mountain * self.MOUNTAIN_COST
+
+    def is_within_budget(self, num_grassland, num_forest, num_mountain):
+        if self.calculate_cost(num_grassland, num_forest, num_mountain) <= self.BUDGET:
+            return True
+        else:
+            return False
 
