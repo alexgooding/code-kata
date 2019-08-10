@@ -68,3 +68,37 @@ class DefenceSolver:
         else:
             return False
 
+    def have_two_neighbours_in_one_direction(self, grid, coordinate, y_limit, x_limit):
+        top_border = []
+        bottom_border = []
+        left_border = []
+        right_border = []
+
+        if coordinate[0] - 1 < 0:
+            top_border = ["B", "B", "B"]
+        else:
+            top_border = ["B" if coordinate[1] - 1 < 0 else grid[coordinate[0] - 1][coordinate[1] - 1], grid[coordinate[0] - 1][coordinate[1]], "B" if coordinate[1] + 1 >= x_limit else grid[coordinate[0] - 1][coordinate[1] + 1]]
+
+        if coordinate[0] + 1 >= y_limit:
+            bottom_border = ["B", "B", "B"]
+        else:
+            bottom_border = ["B" if coordinate[1] - 1 < 0 else grid[coordinate[0] + 1][coordinate[1] - 1], grid[coordinate[0] + 1][coordinate[1]], "B" if coordinate[1] + 1 >= x_limit else grid[coordinate[0] + 1][coordinate[1] + 1]]
+
+    def does_wall_join(self, grid):
+        y_limit = len(grid)
+        x_limit = len(grid[0])
+        for y in range(0, y_limit):
+            for x in range(0, x_limit):
+                if not self.have_two_neighbours_in_one_direction(grid, (y, x), y_limit, x_limit):
+                    return False
+        return True
+
+    # A solution is valid if the wall joins together (assuming water is treated as a wall),
+    # the village is inside the wall and the wall construction is within budget
+    def is_valid_solution(self, grid, num_grassland, num_forest, num_mountain):
+        if self.does_wall_join(grid) and self.is_village_inside_wall(grid) and self.is_within_budget(num_grassland, num_forest, num_mountain):
+            return True
+        else:
+            return False
+
+
