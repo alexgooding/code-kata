@@ -1,3 +1,6 @@
+from shapely.geometry import Polygon
+from operator import itemgetter
+
 class DefenceSolver:
 
     def __init__(self):
@@ -109,7 +112,6 @@ class DefenceSolver:
         x_limit = len(grid[0])
         for y in range(0, y_limit):
             for x in range(0, x_limit):
-                print(grid[y][x])
                 if grid[y][x] == "X":
                     if not self.have_two_neighbours_in_one_direction(grid, (y, x), y_limit, x_limit):
                         return False
@@ -123,6 +125,33 @@ class DefenceSolver:
         else:
             return False
 
+    def find_wall_coordinates(self, grid):
+        wall_coordinates = []
+        y_limit = len(grid)
+        x_limit = len(grid[0])
+        for y in range(0, y_limit):
+            for x in range(0, x_limit):
+                if grid[y][x] == "X":
+                    new_wall_coordinate = (x, y)
+                    wall_coordinates += (new_wall_coordinate,)
+
+        return wall_coordinates
+
+    def calculate_living_space(self, grid):
+        wall_coordinates = self.find_wall_coordinates(grid)
+        sorted(wall_coordinates, key=itemgetter(0))
+        wall_coordinates.sort()
+        wall_coordinates.append(wall_coordinates[0])
+        wall_coordinates = tuple(wall_coordinates)
+        print(wall_coordinates)
+        wall_boundary = Polygon(wall_coordinates)
+        return wall_boundary.area
+
+    # Recursive branching until solution is found or money runs out. Start from every point in the grasslands.
+    # def solve(self):
+
+
+
 if __name__ == "__main__":
     solver = DefenceSolver()
-    print(solver.does_wall_join(solver.MAP))
+    print(solver.calculate_living_space(solver.MAP))
