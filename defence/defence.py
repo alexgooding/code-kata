@@ -167,16 +167,82 @@ class DefenceSolver:
         for y in range(0, self.Y_LIMIT):
             for x in range(0, self.X_LIMIT):
                 if grid[y][x] == "G":
+                    print("Starting position: (" + str(x) + ", " + str(y) + ")")
                     self.next_wall(deepcopy(grid), [x, y], [], 0, 0, 0)
 
         print(self.best_wall_path)
         print(self.best_wall_score)
 
-    def next_wall(self, grid, current_wall_coordinate, current_path, num_grassland_wall, num_forest_wall, num_mountain_wall):
+    # def next_wall(self, grid, current_wall_coordinate, current_path, num_grassland_wall, num_forest_wall, num_mountain_wall):
+    #     if current_wall_coordinate[0] < 0 or current_wall_coordinate[0] >= self.Y_LIMIT or current_wall_coordinate[1] < 0 or current_wall_coordinate[1] >= self.X_LIMIT:
+    #         return
+    #     if grid[current_wall_coordinate[1]][current_wall_coordinate[0]] == "W":
+    #         return
+    #     if grid[current_wall_coordinate[1]][current_wall_coordinate[0]] == "G":
+    #         num_grassland_wall += 1
+    #         grid[current_wall_coordinate[1]][current_wall_coordinate[0]] = "X"
+    #     if grid[current_wall_coordinate[1]][current_wall_coordinate[0]] == "F":
+    #         num_forest_wall += 1
+    #         grid[current_wall_coordinate[1]][current_wall_coordinate[0]] = "X"
+    #     if grid[current_wall_coordinate[1]][current_wall_coordinate[0]] == "M":
+    #         num_mountain_wall += 1
+    #         grid[current_wall_coordinate[1]][current_wall_coordinate[0]] = "X"
+    #
+    #     if not self.is_within_budget(num_grassland_wall, num_forest_wall, num_mountain_wall):
+    #         print("here")
+    #         if self.is_valid_solution(grid, num_grassland_wall, num_forest_wall, num_mountain_wall):
+    #             current_path_score = self.calculate_living_space(current_path)
+    #             if current_path_score > self.best_wall_score:
+    #                 self.best_wall_score = current_path_score
+    #                 self.best_wall_path = current_path
+    #         return
+    #     else:
+    #         current_path.append(current_wall_coordinate)
+    #         print(current_path)
+    #         # new_grid = deepcopy(grid)
+    #         print(current_wall_coordinate)
+    #         # TODO Can try deep copy on each grid in recursion.
+    #         new_grid = deepcopy(grid)
+    #
+    #         new_coordinate_1 = [current_wall_coordinate[0] - 1, current_wall_coordinate[1] - 1]
+    #         new_coordinate_2 = [current_wall_coordinate[0] - 1, current_wall_coordinate[1]]
+    #         new_coordinate_3 = [current_wall_coordinate[0], current_wall_coordinate[1] - 1]
+    #         new_coordinate_4 = [current_wall_coordinate[0] + 1, current_wall_coordinate[1] - 1]
+    #         new_coordinate_5 = [current_wall_coordinate[0] - 1, current_wall_coordinate[1] + 1]
+    #         new_coordinate_6 = [current_wall_coordinate[0] + 1, current_wall_coordinate[1] + 1]
+    #         new_coordinate_7 = [current_wall_coordinate[0] + 1, current_wall_coordinate[1]]
+    #         new_coordinate_8 = [current_wall_coordinate[0], current_wall_coordinate[1] + 1]
+    #
+    #         if new_coordinate_1 not in current_path:
+    #             self.next_wall(new_grid, new_coordinate_1,
+    #                            current_path, num_grassland_wall, num_forest_wall,num_mountain_wall)
+    #         if new_coordinate_2 not in current_path:
+    #             self.next_wall(deepcopy(new_grid), new_coordinate_2,
+    #                            current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+    #         if new_coordinate_3 not in current_path:
+    #             self.next_wall(deepcopy(new_grid), new_coordinate_3,
+    #                            current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+    #         if new_coordinate_4 not in current_path:
+    #             self.next_wall(deepcopy(new_grid), new_coordinate_4,
+    #                            current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+    #         if new_coordinate_5 not in current_path:
+    #             self.next_wall(deepcopy(new_grid), new_coordinate_5,
+    #                            current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+    #         if new_coordinate_6 not in current_path:
+    #             self.next_wall(deepcopy(new_grid), new_coordinate_6,
+    #                            current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+    #         if new_coordinate_7 not in current_path:
+    #             self.next_wall(deepcopy(new_grid), new_coordinate_7,
+    #                            current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+    #         if new_coordinate_8 not in current_path:
+    #             self.next_wall(deepcopy(new_grid), new_coordinate_8,
+    #                            current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+
+    def current_path_continue(self, grid, current_wall_coordinate, current_path, num_grassland_wall, num_forest_wall, num_mountain_wall):
         if current_wall_coordinate[0] < 0 or current_wall_coordinate[0] >= self.Y_LIMIT or current_wall_coordinate[1] < 0 or current_wall_coordinate[1] >= self.X_LIMIT:
-            return
+            return False
         if grid[current_wall_coordinate[1]][current_wall_coordinate[0]] == "W":
-            return
+            return False
         if grid[current_wall_coordinate[1]][current_wall_coordinate[0]] == "G":
             num_grassland_wall += 1
             grid[current_wall_coordinate[1]][current_wall_coordinate[0]] = "X"
@@ -188,52 +254,86 @@ class DefenceSolver:
             grid[current_wall_coordinate[1]][current_wall_coordinate[0]] = "X"
 
         if not self.is_within_budget(num_grassland_wall, num_forest_wall, num_mountain_wall):
+            print("here")
             if self.is_valid_solution(grid, num_grassland_wall, num_forest_wall, num_mountain_wall):
                 current_path_score = self.calculate_living_space(current_path)
                 if current_path_score > self.best_wall_score:
                     self.best_wall_score = current_path_score
                     self.best_wall_path = current_path
+            return False
+
+        return True
+
+    def next_wall(self, grid, current_wall_coordinate, current_path, num_grassland_wall, num_forest_wall, num_mountain_wall):
+
+        if not self.current_path_continue(grid, current_wall_coordinate, current_path, num_grassland_wall, num_forest_wall, num_mountain_wall):
             return
-        else:
-            current_path.append(current_wall_coordinate)
-            # new_grid = deepcopy(grid)
-            print(current_wall_coordinate)
-            # TODO Can try deep copy on each grid in recursion.
-            new_grid = deepcopy(grid)
 
-            new_coordinate_1 = [current_wall_coordinate[0] - 1, current_wall_coordinate[1] - 1]
-            new_coordinate_2 = [current_wall_coordinate[0] - 1, current_wall_coordinate[1]]
-            new_coordinate_3 = [current_wall_coordinate[0], current_wall_coordinate[1] - 1]
-            new_coordinate_4 = [current_wall_coordinate[0] + 1, current_wall_coordinate[1] - 1]
-            new_coordinate_5 = [current_wall_coordinate[0] - 1, current_wall_coordinate[1] + 1]
-            new_coordinate_6 = [current_wall_coordinate[0] + 1, current_wall_coordinate[1] + 1]
-            new_coordinate_7 = [current_wall_coordinate[0] + 1, current_wall_coordinate[1]]
-            new_coordinate_8 = [current_wall_coordinate[0], current_wall_coordinate[1] + 1]
+        current_path.append(current_wall_coordinate)
+        print(current_path)
+        # new_grid = deepcopy(grid)
+        # print(current_wall_coordinate)
+        new_grid = deepcopy(grid)
 
-            if new_coordinate_1 not in current_path:
-                self.next_wall(new_grid, new_coordinate_1,
-                               current_path, num_grassland_wall, num_forest_wall,num_mountain_wall)
-            if new_coordinate_2 not in current_path:
-                self.next_wall(new_grid, new_coordinate_2,
-                               current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
-            if new_coordinate_3 not in current_path:
-                self.next_wall(new_grid, new_coordinate_3,
-                               current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
-            if new_coordinate_4 not in current_path:
-                self.next_wall(new_grid, new_coordinate_4,
-                               current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
-            if new_coordinate_5 not in current_path:
-                self.next_wall(new_grid, new_coordinate_5,
-                               current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
-            if new_coordinate_6 not in current_path:
-                self.next_wall(new_grid, new_coordinate_6,
-                               current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
-            if new_coordinate_7 not in current_path:
-                self.next_wall(new_grid, new_coordinate_7,
-                               current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
-            if new_coordinate_8 not in current_path:
-                self.next_wall(new_grid, new_coordinate_8,
-                               current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+        new_coordinate_1 = [current_wall_coordinate[0] - 1, current_wall_coordinate[1] - 1]
+        new_coordinate_2 = [current_wall_coordinate[0] - 1, current_wall_coordinate[1]]
+        new_coordinate_3 = [current_wall_coordinate[0], current_wall_coordinate[1] - 1]
+        new_coordinate_4 = [current_wall_coordinate[0] + 1, current_wall_coordinate[1] - 1]
+        new_coordinate_5 = [current_wall_coordinate[0] - 1, current_wall_coordinate[1] + 1]
+        new_coordinate_6 = [current_wall_coordinate[0] + 1, current_wall_coordinate[1] + 1]
+        new_coordinate_7 = [current_wall_coordinate[0] + 1, current_wall_coordinate[1]]
+        new_coordinate_8 = [current_wall_coordinate[0], current_wall_coordinate[1] + 1]
+
+        print("number of grassland wall: " + str(num_grassland_wall))
+
+        if new_coordinate_1 not in current_path:
+            self.next_wall(new_grid, new_coordinate_1,
+                           current_path, num_grassland_wall, num_forest_wall,num_mountain_wall)
+        if not self.current_path_continue(grid, current_wall_coordinate, current_path, num_grassland_wall,
+                                          num_forest_wall, num_mountain_wall):
+            return
+        if new_coordinate_2 not in current_path:
+            self.next_wall(deepcopy(new_grid), new_coordinate_2,
+                           current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+        if not self.current_path_continue(grid, current_wall_coordinate, current_path, num_grassland_wall,
+                                          num_forest_wall, num_mountain_wall):
+            return
+        if new_coordinate_3 not in current_path:
+            self.next_wall(deepcopy(new_grid), new_coordinate_3,
+                           current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+        if not self.current_path_continue(grid, current_wall_coordinate, current_path, num_grassland_wall,
+                                          num_forest_wall, num_mountain_wall):
+            return
+        if new_coordinate_4 not in current_path:
+            self.next_wall(deepcopy(new_grid), new_coordinate_4,
+                           current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+        if not self.current_path_continue(grid, current_wall_coordinate, current_path, num_grassland_wall,
+                                          num_forest_wall, num_mountain_wall):
+            return
+        if new_coordinate_5 not in current_path:
+            self.next_wall(deepcopy(new_grid), new_coordinate_5,
+                           current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+        if not self.current_path_continue(grid, current_wall_coordinate, current_path, num_grassland_wall,
+                                          num_forest_wall, num_mountain_wall):
+            return
+        if new_coordinate_6 not in current_path:
+            self.next_wall(deepcopy(new_grid), new_coordinate_6,
+                           current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+        if not self.current_path_continue(grid, current_wall_coordinate, current_path, num_grassland_wall,
+                                          num_forest_wall, num_mountain_wall):
+            return
+        if new_coordinate_7 not in current_path:
+            self.next_wall(deepcopy(new_grid), new_coordinate_7,
+                           current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+        if not self.current_path_continue(grid, current_wall_coordinate, current_path, num_grassland_wall,
+                                          num_forest_wall, num_mountain_wall):
+            return
+        if new_coordinate_8 not in current_path:
+            self.next_wall(deepcopy(new_grid), new_coordinate_8,
+                           current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+        if not self.current_path_continue(grid, current_wall_coordinate, current_path, num_grassland_wall,
+                                          num_forest_wall, num_mountain_wall):
+            return
 
 if __name__ == "__main__":
     solver = DefenceSolver()
