@@ -9,61 +9,68 @@ class DefenceSolver:
     def __init__(self):
         # G = grassland, F = forest, M = mountain, W = water, X = wall, B = blank
         self.MAP = [
-                    ["F", "X", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "W", "W"],
-                    ["X", "F", "X", "X", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "F", "F", "F"],
-                    ["X", "F", "F", "X", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "F", "F", "F", "F"],
-                    ["F", "X", "X", "F", "F", "F", "F", "F", "G", "G", "G", "F", "F", "F", "F", "F", "F", "F", "F", "M", "M", "M", "M", "M", "M", "M", "M", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "F", "F", "F", "F", "F"],
-                    ["F", "F", "F", "F", "F", "F", "F", "G", "G", "G", "G", "G", "G", "F", "F", "F", "G", "G", "G", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "F", "F", "W", "W", "W", "W", "W", "F", "W", "W", "W", "F", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F"],
-                    ["F", "F", "F", "F", "F", "F", "F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F"],
-                    ["F", "F", "F", "F", "F", "F", "F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F"],
-                    ["F", "F", "F", "F", "F", "F", "F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F"],
-                    ["F", "F", "F", "F", "F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "W"],
-                    ["F", "F", "F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "W", "W"],
-                    ["F", "F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "W", "F"],
-                    ["F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "W", "W", "F"],
-                    ["F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "G", "G"],
-                    ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "G", "G", "G", "G", "G", "G"],
-                    ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "G", "G", "G", "G", "G", "G"],
-                    ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "F", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "G", "G", "G", "G", "G"],
-                    ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "G", "G", "G"],
-                    ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "G", "G", "G", "G"],
-                    ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "G", "M", "M", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "F", "F", "F", "F", "F", "F", "F", "G", "G", "G", "G", "G", "F", "F", "F", "F", "G", "G", "G", "G", "G", "G"],
-                    ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "G", "G", "G", "G", "G", "G"],
-                    ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "G", "G", "G", "G", "G", "G"],
-                    ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F"],
-                    ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "W", "G", "W", "W", "W", "W", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "G", "G", "G", "G", "F"],
-                    ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F", "W", "W", "W", "W", "W", "W", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "G", "G", "G", "G", "F"],
-                    ["F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "W", "W", "W", "W", "W", "W", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "G", "G", "G", "F", "F"],
-                    ["F", "F", "F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "W", "W", "W", "W", "W", "G", "G", "G", "G", "G", "G", "V", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F"],
-                    ["F", "F", "F", "F", "F", "G", "G", "G", "G", "G", "G", "F", "F", "F", "W", "W", "W", "W", "F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F"],
-                    ["F", "F", "F", "F", "F", "G", "G", "G", "G", "G", "G", "F", "F", "F", "F", "F", "W", "F", "F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F"],
-                    ["F", "F", "F", "F", "F", "G", "G", "G", "G", "G", "F", "F", "F", "F", "F", "W", "W", "F", "F", "F", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F"],
-                    ["F", "F", "F", "F", "F", "F", "G", "G", "G", "F", "F", "F", "F", "F", "W", "W", "F", "F", "F", "F", "F", "F", "G", "G", "G", "M", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F"],
-                    ["F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F", "M", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F"],
-                    ["F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F"],
-                    ["F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "F", "F", "W", "F", "F", "F", "F", "W", "W", "W", "W", "W", "W", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F"],
-                    ["F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "F", "F", "F", "W", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F", "F"],
-                    ["F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F", "F"],
-                    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "W", "W", "W", "W", "W", "W", "F", "W", "W", "W", "W", "W", "W", "W", "W", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F", "F", "F"],
-                    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "W", "W", "W", "W", "W", "W", "F", "F", "F", "W", "W", "W", "W", "W", "W", "W", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F", "F", "F", "F", "F"],
-                    ["W", "W", "W", "W", "W", "W", "W", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "G", "G", "G", "G", "G", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"],
-                    ["W", "W", "W", "W", "W", "W", "F", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"],
-                    ["W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "W", "W", "W", "F", "F", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"],
-                    ["W", "W", "W", "W", "W", "F", "F", "W", "F", "F", "F", "W", "W", "F", "F", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F"],
-                    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "W", "W", "W", "W", "W", "F", "F", "F", "W", "F", "F", "F", "W", "W", "W", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F"],
-                    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "W", "W", "W", "F", "F", "W", "F", "F", "F", "F", "F", "W", "W", "W", "W", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-                    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "W", "W", "W", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-                    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "W", "W", "W", "W", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-                    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-                    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-                    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-                    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-                    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
-                    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"]
+                    ["G", "G", "G", "G", "G"],
+                    ["G", "G", "G", "G", "G"],
+                    ["G", "G", "G", "G", "G"],
+                    ["G", "G", "G", "G", "G"],
+                    ["G", "G", "G", "G", "G"]
                     ]
+        # self.MAP = [
+        #             ["F", "X", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "W", "W"],
+        #             ["X", "F", "X", "X", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "F", "F", "F"],
+        #             ["X", "F", "F", "X", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "F", "F", "F", "F"],
+        #             ["F", "X", "X", "F", "F", "F", "F", "F", "G", "G", "G", "F", "F", "F", "F", "F", "F", "F", "F", "M", "M", "M", "M", "M", "M", "M", "M", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "F", "F", "F", "F", "F"],
+        #             ["F", "F", "F", "F", "F", "F", "F", "G", "G", "G", "G", "G", "G", "F", "F", "F", "G", "G", "G", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "F", "F", "W", "W", "W", "W", "W", "F", "W", "W", "W", "F", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F"],
+        #             ["F", "F", "F", "F", "F", "F", "F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F"],
+        #             ["F", "F", "F", "F", "F", "F", "F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F"],
+        #             ["F", "F", "F", "F", "F", "F", "F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F"],
+        #             ["F", "F", "F", "F", "F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "W"],
+        #             ["F", "F", "F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "W", "W"],
+        #             ["F", "F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "W", "F"],
+        #             ["F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "W", "W", "F"],
+        #             ["F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "G", "G"],
+        #             ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "G", "G", "G", "G", "G", "G"],
+        #             ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "G", "G", "G", "G", "G", "G"],
+        #             ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "W", "F", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "G", "G", "G", "G", "G"],
+        #             ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "G", "G", "G"],
+        #             ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "G", "G", "G", "G"],
+        #             ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "G", "M", "M", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "F", "F", "F", "F", "F", "F", "F", "G", "G", "G", "G", "G", "F", "F", "F", "F", "G", "G", "G", "G", "G", "G"],
+        #             ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "G", "G", "G", "G", "G", "G"],
+        #             ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "G", "G", "G", "G", "G", "G"],
+        #             ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F"],
+        #             ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "W", "G", "W", "W", "W", "W", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "G", "G", "G", "G", "F"],
+        #             ["G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F", "W", "W", "W", "W", "W", "W", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "G", "G", "G", "G", "F"],
+        #             ["F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "W", "W", "W", "W", "W", "W", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "G", "G", "G", "F", "F"],
+        #             ["F", "F", "F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "W", "W", "W", "W", "W", "G", "G", "G", "G", "G", "G", "V", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F"],
+        #             ["F", "F", "F", "F", "F", "G", "G", "G", "G", "G", "G", "F", "F", "F", "W", "W", "W", "W", "F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F"],
+        #             ["F", "F", "F", "F", "F", "G", "G", "G", "G", "G", "G", "F", "F", "F", "F", "F", "W", "F", "F", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F"],
+        #             ["F", "F", "F", "F", "F", "G", "G", "G", "G", "G", "F", "F", "F", "F", "F", "W", "W", "F", "F", "F", "G", "G", "G", "G", "G", "G", "G", "G", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F"],
+        #             ["F", "F", "F", "F", "F", "F", "G", "G", "G", "F", "F", "F", "F", "F", "W", "W", "F", "F", "F", "F", "F", "F", "G", "G", "G", "M", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F"],
+        #             ["F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F", "M", "M", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F"],
+        #             ["F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "M", "M", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F"],
+        #             ["F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "F", "F", "W", "F", "F", "F", "F", "W", "W", "W", "W", "W", "W", "M", "M", "M", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F"],
+        #             ["F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "W", "F", "F", "F", "W", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F", "F"],
+        #             ["F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F", "F"],
+        #             ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "W", "W", "W", "W", "W", "W", "F", "W", "W", "W", "W", "W", "W", "W", "W", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F", "F", "F"],
+        #             ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "W", "W", "W", "W", "W", "W", "F", "F", "F", "W", "W", "W", "W", "W", "W", "W", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "G", "F", "F", "F", "F", "F", "F", "F"],
+        #             ["W", "W", "W", "W", "W", "W", "W", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "G", "G", "G", "G", "G", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"],
+        #             ["W", "W", "W", "W", "W", "W", "F", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"],
+        #             ["W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "W", "W", "W", "F", "F", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F", "F"],
+        #             ["W", "W", "W", "W", "W", "F", "F", "W", "F", "F", "F", "W", "W", "F", "F", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "F", "F", "F", "F"],
+        #             ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "W", "W", "W", "W", "W", "F", "F", "F", "W", "F", "F", "F", "W", "W", "W", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F"],
+        #             ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "F", "W", "W", "W", "F", "F", "W", "F", "F", "F", "F", "F", "W", "W", "W", "W", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+        #             ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "W", "W", "W", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+        #             ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "W", "W", "W", "W", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+        #             ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+        #             ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "F", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+        #             ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+        #             ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+        #             ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+        #             ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W", "W"]
+        #             ]
         self.Y_LIMIT = len(self.MAP)
         self.X_LIMIT = len(self.MAP[0])
-        self.BUDGET = 1000
+        self.BUDGET = 4
         self.GRASSLAND_COST = 1
         self.FOREST_COST = 10
         self.MOUNTAIN_COST = 100
@@ -189,22 +196,44 @@ class DefenceSolver:
             return
         else:
             current_path.append(current_wall_coordinate)
-            self.next_wall(deepcopy(grid), [current_wall_coordinate[0] - 1, current_wall_coordinate[1] - 1],
-                           current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
-            self.next_wall(deepcopy(grid), [current_wall_coordinate[0] - 1, current_wall_coordinate[1]],
-                           current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
-            self.next_wall(deepcopy(grid), [current_wall_coordinate[0], current_wall_coordinate[1] - 1],
-                           current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
-            self.next_wall(deepcopy(grid), [current_wall_coordinate[0] + 1, current_wall_coordinate[1] - 1],
-                           current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
-            self.next_wall(deepcopy(grid), [current_wall_coordinate[0] - 1, current_wall_coordinate[1] + 1],
-                           current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
-            self.next_wall(deepcopy(grid), [current_wall_coordinate[0] + 1, current_wall_coordinate[1] + 1],
-                           current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
-            self.next_wall(deepcopy(grid), [current_wall_coordinate[0] + 1, current_wall_coordinate[1]],
-                           current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
-            self.next_wall(deepcopy(grid), [current_wall_coordinate[0], current_wall_coordinate[1] + 1],
-                           current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+            # new_grid = deepcopy(grid)
+            print(current_wall_coordinate)
+            # TODO Can try deep copy on each grid in recursion.
+            new_grid = deepcopy(grid)
+
+            new_coordinate_1 = [current_wall_coordinate[0] - 1, current_wall_coordinate[1] - 1]
+            new_coordinate_2 = [current_wall_coordinate[0] - 1, current_wall_coordinate[1]]
+            new_coordinate_3 = [current_wall_coordinate[0], current_wall_coordinate[1] - 1]
+            new_coordinate_4 = [current_wall_coordinate[0] + 1, current_wall_coordinate[1] - 1]
+            new_coordinate_5 = [current_wall_coordinate[0] - 1, current_wall_coordinate[1] + 1]
+            new_coordinate_6 = [current_wall_coordinate[0] + 1, current_wall_coordinate[1] + 1]
+            new_coordinate_7 = [current_wall_coordinate[0] + 1, current_wall_coordinate[1]]
+            new_coordinate_8 = [current_wall_coordinate[0], current_wall_coordinate[1] + 1]
+
+            if new_coordinate_1 not in current_path:
+                self.next_wall(new_grid, new_coordinate_1,
+                               current_path, num_grassland_wall, num_forest_wall,num_mountain_wall)
+            if new_coordinate_2 not in current_path:
+                self.next_wall(new_grid, new_coordinate_2,
+                               current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+            if new_coordinate_3 not in current_path:
+                self.next_wall(new_grid, new_coordinate_3,
+                               current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+            if new_coordinate_4 not in current_path:
+                self.next_wall(new_grid, new_coordinate_4,
+                               current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+            if new_coordinate_5 not in current_path:
+                self.next_wall(new_grid, new_coordinate_5,
+                               current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+            if new_coordinate_6 not in current_path:
+                self.next_wall(new_grid, new_coordinate_6,
+                               current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+            if new_coordinate_7 not in current_path:
+                self.next_wall(new_grid, new_coordinate_7,
+                               current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
+            if new_coordinate_8 not in current_path:
+                self.next_wall(new_grid, new_coordinate_8,
+                               current_path, num_grassland_wall, num_forest_wall, num_mountain_wall)
 
 if __name__ == "__main__":
     solver = DefenceSolver()
