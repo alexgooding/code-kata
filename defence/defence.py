@@ -3,6 +3,7 @@ from operator import itemgetter
 from matplotlib.path import Path
 import numpy as np
 from copy import deepcopy
+from scipy import optimize
 
 class DefenceSolver:
 
@@ -76,6 +77,8 @@ class DefenceSolver:
         self.MOUNTAIN_COST = 100
         self.best_wall_path = []
         self.best_wall_score = 0
+        self.grassland_coordinates, self.forest_coordinates, self.mountain_coordinates, self.village_coordinate = self.parse_map(self.MAP)
+        self.possible_wall_coordinates = self.grassland_coordinates + self.forest_coordinates + self.mountain_coordinates
 
     def calculate_cost(self, num_grassland, num_forest, num_mountain):
         return num_grassland * self.GRASSLAND_COST + num_forest * self.FOREST_COST + num_mountain * self.MOUNTAIN_COST
@@ -163,15 +166,15 @@ class DefenceSolver:
         return living_space
 
     # Recursive branching until solution is found or money runs out. Start from every point in the grasslands. Ignoring water as walls for now
-    def solve(self, grid):
-        for y in range(0, self.Y_LIMIT):
-            for x in range(0, self.X_LIMIT):
-                if grid[y][x] == "G":
-                    print("Starting position: (" + str(x) + ", " + str(y) + ")")
-                    self.next_wall(deepcopy(grid), [x, y], [], 0, 0, 0)
-
-        print(self.best_wall_path)
-        print(self.best_wall_score)
+    # def solve(self, grid):
+    #     for y in range(0, self.Y_LIMIT):
+    #         for x in range(0, self.X_LIMIT):
+    #             if grid[y][x] == "G":
+    #                 print("Starting position: (" + str(x) + ", " + str(y) + ")")
+    #                 self.next_wall(deepcopy(grid), [x, y], [], 0, 0, 0)
+    #
+    #     print(self.best_wall_path)
+    #     print(self.best_wall_score)
 
     # def next_wall(self, grid, current_wall_coordinate, current_path, num_grassland_wall, num_forest_wall, num_mountain_wall):
     #     if current_wall_coordinate[0] < 0 or current_wall_coordinate[0] >= self.Y_LIMIT or current_wall_coordinate[1] < 0 or current_wall_coordinate[1] >= self.X_LIMIT:
@@ -335,6 +338,88 @@ class DefenceSolver:
                                           num_forest_wall, num_mountain_wall):
             return
 
+
+    def parse_map(self, grid):
+        grassland_coordinates = []
+        forest_coordinates = []
+        mountain_coordinates = []
+        village_coordinate = 0
+        for y in range(0, self.Y_LIMIT):
+            for x in range(0, self.X_LIMIT):
+                if grid[y][x] == "G":
+                    grassland_coordinates.append((x, y))
+                if grid[y][x] == "F":
+                    forest_coordinates.append((x, y))
+                if grid[y][x] == "M":
+                    mountain_coordinates.append((x, y))
+                if grid[y][x] == "V":
+                    village_coordinate = (x, y)
+
+        return grassland_coordinates, forest_coordinates, mountain_coordinates, village_coordinate
+
+    def cost_function(self, G, F, M):
+        return self.BUDGET - self.MOUNTAIN_COST*len(M) - self.FOREST_COST*len(F) - self.GRASSLAND_COST*len(G) - self.calculate_living_space(G + F + M)
+
+    def cost_function_concat(self, x):
+        x = self.make_coordinates(x)
+        grassland_wall_coordinates = []
+        forest_wall_coordinates = []
+        mountain_wall_coordinates = []
+        for coord in x:
+            if coord in self.grassland_coordinates:
+                grassland_wall_coordinates.append(coord)
+            if coord in self.forest_coordinates:
+                forest_wall_coordinates.append(coord)
+            if coord in self.mountain_coordinates:
+                mountain_wall_coordinates.append(coord)
+
+        return self.cost_function(grassland_wall_coordinates, forest_wall_coordinates, mountain_wall_coordinates)
+
+    def on_map_constraint(self, inputs):
+        for coord in inputs:
+            if coord not in self.possible_wall_coordinates:
+                return 1
+        else:
+            return 0
+
+    def make_coordinates(self, list):
+        coordinate_list = []
+        i = 0
+        while i < len(list):
+            coordinate_list.append((list[i], list[i+1]))
+            i += 2
+        return coordinate_list
+
+    problem_constraints = ({'type': 'eq', 'fun': on_map_constraint})
+    def solve(self):
+        optimize.minimize(self.cost_function, np.array([(1, 1), (3, 3), (4, 4)]), method='SLSQP', options={'disp': True},
+                          constraints=self.problem_constraints)
+
 if __name__ == "__main__":
     solver = DefenceSolver()
-    print(solver.solve(solver.MAP))
+    #print(solver.solve())
+
+    def on_map_constraint(inputs):
+        coordinates = solver.make_coordinates(inputs)
+        for coord in coordinates:
+            if coord not in solver.possible_wall_coordinates:
+                return 1
+
+        return 0
+
+    def enough_wall_pieces_constraint(inputs):
+        coordinates = solver.make_coordinates(inputs)
+        if len(coordinates) >= 4:
+            return 0
+        else:
+            return 1
+
+    problem_constraints = ({'type': 'eq', 'fun': on_map_constraint},
+                           {'type': 'eq', 'fun': enough_wall_pieces_constraint})
+
+    def solve():
+        guess = np.array([(1, 1), (3, 3), (4, 4), (2, 3)])
+        return optimize.minimize(solver.cost_function_concat, guess, method='SLSQP',
+                                 options={'disp': True}, constraints=problem_constraints)
+
+    print(solve())
